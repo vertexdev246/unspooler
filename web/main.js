@@ -54,8 +54,7 @@ function makeEditor(parent, { readOnly, doc, placeholder, onDocChange }) {
 const input = makeEditor($("input"), {
   readOnly: false,
   doc: "",
-  placeholder: "Paste obfuscated JavaScript here, open a file, or pick an Example — it deobfuscates automatically (or hit ⌘/Ctrl+Enter).",
-  onDocChange: () => scheduleAutoRun(),
+  placeholder: "Paste obfuscated JavaScript here, open a file, or pick an Example — then click Deobfuscate (or ⌘/Ctrl+Enter).",
 });
 const output = makeEditor($("output"), { readOnly: true, placeholder: "Readable output appears here." });
 
@@ -78,26 +77,11 @@ spawnWorker();
 
 let running = false;
 let startTs = 0;
-let lastRunCode = null;      // input of the most recent run (skip duplicate auto-runs)
-let pendingCode = null;      // input queued while a run is in flight
-let autoRunTimer = 0;
-
-// Auto-deobfuscate shortly after the input stops changing (paste or typing),
-// so the user never has to find the button. Debounced; de-duped by content.
-function scheduleAutoRun() {
-  clearTimeout(autoRunTimer);
-  autoRunTimer = setTimeout(() => {
-    const code = getInput().trim();
-    if (!code || code === lastRunCode) return;
-    run();
-  }, 450);
-}
 
 function run() {
+  if (running) return;
   const code = getInput().trim();
   if (!code) { showError("Paste some obfuscated JavaScript first."); return; }
-  if (running) { pendingCode = code; return; }   // coalesce; re-run after the current one
-  lastRunCode = code;
   running = true; startTs = performance.now();
   setRunning(true);
   setStatus('<span class="spinner"></span>Deobfuscating…');
@@ -117,9 +101,6 @@ function onResult(e) {
   } else {
     showError(msg?.error || "Failed to deobfuscate.");
   }
-  // if the input changed while we were busy, run the latest
-  pendingCode = null;
-  if (getInput().trim() && getInput().trim() !== lastRunCode) run();
 }
 
 /* ---------------- detection + stats ---------------- */
