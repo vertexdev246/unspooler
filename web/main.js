@@ -1,6 +1,6 @@
 import { EditorView, basicSetup } from "codemirror";
 import { EditorState, Compartment } from "@codemirror/state";
-import { keymap } from "@codemirror/view";
+import { keymap, placeholder as cmPlaceholder } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { SAMPLES } from "./samples.js";
@@ -44,13 +44,18 @@ function makeEditor(parent, { readOnly, doc, placeholder }) {
     EditorView.lineWrapping,
   ];
   if (readOnly) exts.push(EditorState.readOnly.of(true), EditorView.editable.of(false));
+  if (placeholder) exts.push(cmPlaceholder(placeholder));
   const view = new EditorView({ doc: doc || "", extensions: exts, parent });
   themeCompartments.push({ view, comp: theme });
   return view;
 }
 
-const input = makeEditor($("input"), { readOnly: false, doc: SAMPLES["js-confuser-low"]?.code || "" });
-const output = makeEditor($("output"), { readOnly: true });
+const input = makeEditor($("input"), {
+  readOnly: false,
+  doc: "",
+  placeholder: "Paste obfuscated JavaScript here, open a file, or pick an Example — then hit Deobfuscate (⌘/Ctrl+Enter).",
+});
+const output = makeEditor($("output"), { readOnly: true, placeholder: "Readable output appears here." });
 
 function getInput() { return input.state.doc.toString(); }
 function setOutput(text) {
