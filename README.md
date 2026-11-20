@@ -1,10 +1,10 @@
-# Unspool
+# Unspooler
 
-**Unspool** unwinds obfuscated JavaScript back into something you can read. Paste
+**Unspooler** unwinds obfuscated JavaScript back into something you can read. Paste
 obfuscated code in, get clean, formatted source out — it runs **entirely in your
 browser**, so nothing is ever uploaded, and the input is only *parsed*, never executed.
 
-> Live: **https://unspool.pages.dev** · Deployed as a static site on Cloudflare Pages.
+> Live: **https://unspooler.pages.dev** · Deployed as a static site on Cloudflare Pages.
 
 <p align="center"><em>Obfuscated in, readable out — no server, no upload.</em></p>
 
@@ -12,7 +12,7 @@ browser**, so nothing is ever uploaded, and the input is only *parsed*, never ex
 
 ## What it reverses
 
-Unspool recognises the obfuscator from its fingerprint and applies the matching
+Unspooler recognises the obfuscator from its fingerprint and applies the matching
 passes. Supported today:
 
 | Obfuscator | Coverage |
@@ -26,7 +26,7 @@ passes. Supported today:
 | **jfogs**, **gnirts**, **js-virtualizer** | Decoded / lifted where the shape is proven. |
 
 Everything is **shape-matched**: constructs that don't match a known obfuscator
-template are left untouched, so Unspool never guesses and never changes behaviour.
+template are left untouched, so Unspooler never guesses and never changes behaviour.
 
 ## How it works
 
@@ -66,7 +66,7 @@ npm run build    # → dist/  (minified static site)
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name unspool
+npx wrangler pages deploy dist --project-name unspooler
 ```
 
 The output is fully static — it works on any static host (Pages, Netlify,
@@ -74,7 +74,7 @@ GitHub Pages, an S3 bucket).
 
 ## Safety
 
-Unspool **parses** input with Babel and rewrites the AST. It does **not** execute the
+Unspooler **parses** input with Babel and rewrites the AST. It does **not** execute the
 code it is given — encoders like JSFuck/packer are evaluated with a pure, sandboxed
 sub-evaluator, never the real `eval`. All work happens client-side in a Web Worker.
 

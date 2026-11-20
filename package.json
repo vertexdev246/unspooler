@@ -1,7 +1,7 @@
 {
-  "name": "unspool",
+  "name": "unspooler",
   "version": "1.0.0",
-  "description": "Unspool — a static, in-browser JavaScript deobfuscator. Unwinds JS-Confuser, javascript-obfuscator, JSDefender, packer, jsfuck, jjencode/aaencode and more, entirely client-side.",
+  "description": "Unspooler — a static, in-browser JavaScript deobfuscator. Unwinds JS-Confuser, javascript-obfuscator, JSDefender, packer, jsfuck, jjencode/aaencode and more, entirely client-side.",
   "type": "module",
   "license": "MIT",
   "scripts": {

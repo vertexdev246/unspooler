@@ -23,13 +23,13 @@ function applyTheme() {
   }
 }
 (function initTheme() {
-  const saved = localStorage.getItem("unspool-theme");
+  const saved = localStorage.getItem("unspooler-theme");
   if (saved) document.documentElement.setAttribute("data-theme", saved);
 })();
 $("theme").addEventListener("click", () => {
   const next = prefersDark() ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", next);
-  try { localStorage.setItem("unspool-theme", next); } catch {}
+  try { localStorage.setItem("unspooler-theme", next); } catch {}
   applyTheme();
 });
 
@@ -200,5 +200,5 @@ function flash(btn, label) {
 }
 
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => {
-  if (!localStorage.getItem("unspool-theme")) applyTheme();
+  if (!localStorage.getItem("unspooler-theme")) applyTheme();
 });
