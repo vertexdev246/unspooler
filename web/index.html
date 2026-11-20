@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unspool — JavaScript deobfuscator</title>
+  <meta name="description" content="Unspool unwinds obfuscated JavaScript — JS-Confuser, javascript-obfuscator, JSDefender, packer, jsfuck, jjencode and more. Runs entirely in your browser; nothing is uploaded." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+        <path d="M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M4 7v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".55"/>
+      </svg>
+      <span class="brand-name">unspool</span>
+      <span class="brand-tag">JavaScript deobfuscator</span>
+    </div>
+    <div class="topbar-actions">
+      <button id="theme" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12Zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM11 1h2v3h-2V1Zm0 19h2v3h-2v-3ZM3.5 4.9 4.9 3.5 7 5.6 5.6 7 3.5 4.9Zm13.4 13.5 1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1ZM20 11h3v2h-3v-2ZM1 11h3v2H1v-2Zm18.1-6.1 1.4 1.4L18.4 8.5 17 7.1l2.1-2.2ZM5.6 17 7 18.4 4.9 20.5 3.5 19.1 5.6 17Z"/></svg>
+      </button>
+      <a class="ghlink" id="ghlink" href="https://github.com/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span>GitHub</span>
+      </a>
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <div class="toolbar-left">
+      <button id="run" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+        <span>Deobfuscate</span>
+        <kbd>⌘⏎</kbd>
+      </button>
+      <div class="select-wrap">
+        <select id="examples" title="Load an obfuscated example">
+          <option value="">Examples…</option>
+        </select>
+      </div>
+      <label class="check"><input type="checkbox" id="rename" checked /> <span>Rename identifiers</span></label>
+      <button id="clear" class="btn btn-ghost">Clear</button>
+    </div>
+    <div class="toolbar-right">
+      <span id="detect" class="badge badge-muted">no input</span>
+      <span id="stats" class="stats"></span>
+    </div>
+  </section>
+
+  <main class="panes">
+    <div class="pane">
+      <div class="pane-head">
+        <span class="pane-title">Obfuscated input</span>
+        <div class="pane-actions">
+          <label class="linklike" for="file">Open file</label>
+          <input type="file" id="file" accept=".js,.txt,text/javascript" hidden />
+          <button class="linklike" id="paste">Paste</button>
+        </div>
+      </div>
+      <div id="input" class="editor"></div>
+    </div>
+    <div class="pane">
+      <div class="pane-head">
+        <span class="pane-title">Readable output</span>
+        <div class="pane-actions">
+          <button class="linklike" id="copy">Copy</button>
+          <button class="linklike" id="download">Download</button>
+        </div>
+      </div>
+      <div id="output" class="editor"></div>
+      <div id="status" class="status" hidden></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>Runs entirely in your browser — your code is never uploaded.</span>
+    <span class="dot">·</span>
+    <span>Static parsing only; input is never executed.</span>
+  </footer>
+
+  <script type="module" src="assets/main.js"></script>
+</body>
+</html>
