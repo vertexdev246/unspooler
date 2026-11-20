@@ -256,16 +256,27 @@ const DETECTORS = [
     },
   },
   {
-    // sojson.com / jsjiami.com — jjencode-style with brand-named seed variables
+    // sojson.com / jsjiami.com — jjencode-style seed + per-edition string
+    // encryption. The encoder stamps a literal `jsjiami.com.vN` / `sojson.vN`
+    // version string (usually at both the top and bottom of the file), so the
+    // edition is read straight off that marker — never guessed.
     id: "sojson",
     name: "Sojson / jsjiami",
     url: "https://www.jsjiami.com/",
     supported: false,
     test(code) {
       const signals = [];
-      if (/\bsojson\s*=|\[["']sojson["']\]/.test(code)) signals.push("`sojson` seed variable");
-      if (/jsjiami\.com\.v\d/i.test(code)) signals.push("`jsjiami.com.vN` brand marker");
+      const jj = code.match(/jsjiami\.com\.v(\d+)/i);
+      if (jj) signals.push(`\`jsjiami.com.v${jj[1]}\` version marker`);
+      const so = code.match(/\bsojson\.v(\d+)/i);
+      if (so) signals.push(`\`sojson.v${so[1]}\` version marker`);
+      if (!so && /\bsojson\s*=|\[["']sojson["']\]/.test(code)) signals.push("`sojson` seed variable");
+      if (/\b(?:encode_version|version_)\s*=\s*['"]/.test(code)) signals.push("`version_` / `encode_version` seed variable");
       return signals;
+    },
+    details(code) {
+      const m = code.match(/(?:jsjiami\.com\.v|sojson\.v)(\d+)/i);
+      return { edition: m ? `V${m[1]}` : null };
     },
   },
   {
@@ -286,6 +297,39 @@ const DETECTORS = [
     supported: false,
     test(code) {
       return /jshaman/i.test(code) ? ["`jshaman` brand marker"] : [];
+    },
+  },
+  {
+    // javascriptobfuscator.com (RichScripts) — a different product from the
+    // caiguanhao `js-obfuscator` wrapper above. Per-build/commercial options
+    // (code transposition, VM Proof Pack, self-compression); no stable public
+    // output shape, so match only an explicit brand string.
+    id: "richscripts",
+    name: "JavaScript Obfuscator (javascriptobfuscator.com / RichScripts)",
+    url: "https://javascriptobfuscator.com/",
+    supported: false,
+    test(code) {
+      return /javascriptobfuscator\.com|RichScripts/i.test(code) ? ["`javascriptobfuscator.com` brand marker"] : [];
+    },
+  },
+  {
+    // ByteHide Shield — commercial. No published output signature; brand marker only.
+    id: "bytehide",
+    name: "ByteHide Shield (commercial)",
+    url: "https://www.bytehide.com/",
+    supported: false,
+    test(code) {
+      return /byte\s*hide/i.test(code) ? ["`ByteHide` brand marker"] : [];
+    },
+  },
+  {
+    // AfterPack — commercial. Brand marker only.
+    id: "afterpack",
+    name: "AfterPack (commercial)",
+    url: "https://afterpack.dev/",
+    supported: false,
+    test(code) {
+      return /afterpack/i.test(code) ? ["`afterpack` brand marker"] : [];
     },
   },
 ];

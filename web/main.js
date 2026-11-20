@@ -104,10 +104,18 @@ function renderDetection(det) {
   const badge = $("detect");
   const best = det && det.best;
   if (best && best.name) {
-    const conf = best.confidence ? ` · ${best.confidence}` : "";
-    badge.textContent = `${best.name}${conf}`;
-    badge.className = "badge badge-ok";
-    badge.title = (best.transforms || []).join(", ") || (best.signals || []).join(", ");
+    const ed = best.edition ? ` ${best.edition}` : "";
+    if (best.supported === false) {
+      // recognized, but no reversal pass for it yet — don't imply success
+      badge.textContent = `${best.name}${ed} · detected`;
+      badge.className = "badge badge-warn";
+      badge.title = "Recognized but not yet reversed — output is left as-is.\n" + (best.signals || []).join(", ");
+    } else {
+      const conf = best.confidence ? ` · ${best.confidence}` : "";
+      badge.textContent = `${best.name}${ed}${conf}`;
+      badge.className = "badge badge-ok";
+      badge.title = (best.transforms || []).join(", ") || (best.signals || []).join(", ");
+    }
   } else {
     badge.textContent = "unrecognized";
     badge.className = "badge badge-warn";
